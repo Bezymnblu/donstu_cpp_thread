@@ -1,42 +1,28 @@
 #pragma once
-
 #include <string>
-#include <mutex>
 #include <fstream>
+#include <mutex>
+#include <atomic>
 
-// count of threads and iterations
-constexpr int COUNT_THREADS    = 4;
-constexpr int COUNT_ITERATIONS = 3;
+inline constexpr int COUNT_THREADS = 4;
+inline constexpr int COUNT_ITERATIONS = 20; 
 
-// args for thread
 struct ThreadArgs {
-  int         id;
-  std::string tag;
+    int id;
+    std::string tag;
 };
 
-// common resources in separate class
 class Logger {
 public:
-  explicit Logger(const std::string& filename);
-  ~Logger();
-
-  // write line with mutex
-  void writeLine(const std::string& msg);
-
-  // block copy and move
-  Logger(const Logger&)            = delete;
-  Logger& operator=(const Logger&) = delete;
+    explicit Logger(const std::string& filename);
+    bool writeLine(const std::string& msg);
+    void toggleMutex(bool enable);
 
 private:
-  std::ofstream    file_;
-  std::mutex       mutex_;
+    std::ofstream file_;
+    std::mutex mutex_;
+    bool useMutex_ = true;
 };
 
-// function for thread
-void funcThread(const ThreadArgs& args, Logger& logger);
-
-// get system TID for current linux thread
-pid_t getThreadID();
-
-// healline of software
-void about();
+extern int normalCounter;
+extern std::atomic<int> atomicCounter;
