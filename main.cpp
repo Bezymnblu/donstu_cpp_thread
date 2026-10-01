@@ -7,15 +7,17 @@
 #include <unistd.h>
 #include <sys/syscall.h>
 #include "threadfuncs.h"
+#include "atomic"
 
 Logger logger("output.log");
 
 void counterWorker() {
-    for (int i = 0; i < 100000; ++i) {
-        normalCounter++;
-        atomicCounter++;
-    }
+	for (int i = 0; i < 100000; ++i) {
+		++normalCounter;
+		++atomicCounter;
+	}
 }
+
 
 std::string valueWorker(ThreadArgs& args) {
     int counter = 0;
